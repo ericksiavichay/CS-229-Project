@@ -226,7 +226,8 @@ def timegan (ori_data, parameters):
   # 1. Embedding network training
   print('Start Embedding Network Training')
 
-  step_loss = iterations / 10
+  # this will be used to print out loss
+  step_loss = 100
     
   for itt in range(iterations):
     # Set mini-batch

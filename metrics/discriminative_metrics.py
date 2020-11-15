@@ -103,10 +103,13 @@ def discriminative_score_metrics (ori_data, generated_data, rnn_iterations=2000)
   # Train/test division for both original and generated data
   train_x, train_x_hat, test_x, test_x_hat, train_t, train_t_hat, test_t, test_t_hat = \
   train_test_divide(ori_data, generated_data, ori_time, generated_time)
-    
+   
+
+  
   # Training step
   for itt in range(iterations):
-          
+    if itt % 100 == 0:
+        print("iteration %d" % itt)
     # Batch setting
     X_mb, T_mb = batch_generator(train_x, train_t, batch_size)
     X_hat_mb, T_hat_mb = batch_generator(train_x_hat, train_t_hat, batch_size)
