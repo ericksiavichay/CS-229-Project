@@ -160,10 +160,10 @@ if __name__ == '__main__':
   # Calls main function  
   ori_data, generated_data, metrics = main(args)
   for i in range(len(ori_data)):
-      np.save("results/timegan_data/original/ori_data_{}.npy".format(i), ori_data[i])
-      np.save("/results/timegan_data/generated/generated_data_{}.npy".format(i), generated_data[i])
+      np.save("./results/timegan_data/original/ori_data_{}.npy".format(i), ori_data[i])
+      np.save("./results/timegan_data/generated/generated_data_{}.npy".format(i), generated_data[i])
   # save metrics dictionary
-  np.save("/results/timegan_data/metrics.npy", metrics)
+  np.save("./results/timegan_data/metrics.npy", metrics)
 
   # 3. Visualization (PCA and tSNE)
   save_location = "./results/timegan_data/figures/"
