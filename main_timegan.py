@@ -61,7 +61,7 @@ def main (args):
     - metric_results: discriminative and predictive scores
   """
   ## Data loading
-  if args.data_name in ['stock', 'energy']:
+  if args.data_name in ['stock', 'energy', 'beijing']:
     ori_data = real_data_loading(args.data_name, args.seq_len)
   elif args.data_name == 'sine':
     # Set number of samples and its dimensions
@@ -88,7 +88,8 @@ def main (args):
   
   # 1. Discriminative Score
   discriminative_score = list()
-  for _ in range(args.metric_iteration):
+  for i in range(args.metric_iteration):
+    print('discriminative iteration: ', i)
     temp_disc = discriminative_score_metrics(ori_data, generated_data)
     discriminative_score.append(temp_disc)
       
@@ -97,15 +98,12 @@ def main (args):
   # 2. Predictive score
   predictive_score = list()
   for tt in range(args.metric_iteration):
+    print("predictive iteration: ", tt)
     temp_pred = predictive_score_metrics(ori_data, generated_data)
     predictive_score.append(temp_pred)   
       
   metric_results['predictive'] = np.mean(predictive_score)     
           
-  # 3. Visualization (PCA and tSNE)
-  visualization(ori_data, generated_data, 'pca')
-  visualization(ori_data, generated_data, 'tsne')
-  
   ## Print discriminative and predictive scores
   print(metric_results)
 
@@ -118,8 +116,8 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument(
       '--data_name',
-      choices=['sine','stock','energy'],
-      default='stock',
+      choices=['sine','stock','energy', 'beijing'],
+      default='beijing',
       type=str)
   parser.add_argument(
       '--seq_len',
@@ -129,7 +127,7 @@ if __name__ == '__main__':
   parser.add_argument(
       '--module',
       choices=['gru','lstm','lstmLN'],
-      default='gru',
+      default='lstm',
       type=str)
   parser.add_argument(
       '--hidden_dim',
@@ -144,7 +142,7 @@ if __name__ == '__main__':
   parser.add_argument(
       '--iteration',
       help='Training iterations (should be optimized)',
-      default=50000,
+      default=5000,
       type=int)
   parser.add_argument(
       '--batch_size',
@@ -154,10 +152,21 @@ if __name__ == '__main__':
   parser.add_argument(
       '--metric_iteration',
       help='iterations of the metric computation',
-      default=10,
+      default=5,
       type=int)
   
   args = parser.parse_args() 
   
   # Calls main function  
   ori_data, generated_data, metrics = main(args)
+  for i in range(len(ori_data)):
+      np.save("results/timegan_data/original/ori_data_{}.npy".format(i), ori_data[i])
+      np.save("/results/timegan_data/generated/generated_data_{}.npy".format(i), generated_data[i])
+  # save metrics dictionary
+  np.save("/results/timegan_data/metrics.npy", metrics)
+
+  # 3. Visualization (PCA and tSNE)
+  save_location = "./results/timegan_data/figures/"
+  visualization(ori_data, generated_data, 'pca', save_location)
+  visualization(ori_data, generated_data, 'tsne', save_location)
+  
